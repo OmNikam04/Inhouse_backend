@@ -187,7 +187,7 @@ class GenericController {
   uploadFile = async (req, res) => {
     try {
         const modelInstance = new this.Model();
-        const { username, role, tableName } = req.query;
+        const { username, role, tableName, columnName } = req.query;
         const file = req.file;
 
         const filename = `${file.originalname}`;
@@ -208,7 +208,7 @@ class GenericController {
         if(existingFile==null)
         {
           // Get the file path from the uploadFile method
-          const { filePath } = await modelInstance.uploadFile(username, role, tableName, file);
+          const { filePath } = await modelInstance.uploadFile(username, role, tableName, columnName, file);
           await this.ensureDirectoryExists(filePath);
           return res.json({ success: true, message: "File uploaded successfully", filePath });
         }

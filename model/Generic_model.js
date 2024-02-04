@@ -218,9 +218,9 @@ class BaseModel {
 
   //file upload functionality
 
-  async uploadFile(username, role, tableName, file) {
+  async uploadFile(username, role, tableName, columnName, file) {
     // Check and create folders if they don't exist
-    const uploadPath = this.getUploadPath(username, role, tableName);
+    const uploadPath = this.getUploadPath(username, role, tableName, columnName);
     this.createFoldersIfNotExist(uploadPath);
     console.log("inside")
     
@@ -233,27 +233,41 @@ class BaseModel {
     
     // Save file information to the database
     const insertQuery = `INSERT INTO uploads (user_id, role, file_name, file_path, created_at) VALUES (?, ?, ?, ?, NOW())`;
-    await sql.query(insertQuery, [1,role,filename, filePath]);
 
-    return { filename, filePath };
+    const result = await sql.query(insertQuery, [1,role,filename, filePath]);
+
+    console.log('result is ', result[0])
+
+    const lastInsertedId = result[0].insertId;
+
+    const newFilename = `${lastInsertedId}_${filename}`;
+    const newFilePath = path.join(uploadPath, newFilename);
+    fs.renameSync(filePath, newFilePath);
+
+    const updateQuery = `UPDATE uploads SET file_name = ?, file_path = ? WHERE id = ?`;
+    await sql.query(updateQuery, [newFilename, newFilePath, lastInsertedId]);
+
+    return { filename: newFilename, filePath: newFilePath };
+    // return { filename, filePath };
   }
 
-  getUploadPath(username, role, tableName) {
+  getUploadPath(username, role, tableName, columnName) {
     console.log('role is: ',role)
     const baseUploadPath = this.baseUploadPath;
     // const roleFolder = role === 1 ? 'Teacher_Uploads' : 'Student_Uploads';
     let roleFolder = 'Admin_Uploads';
 
     if(role == 1) roleFolder = 'Teacher_Uploads';
-    else roleFolder = 'Student_Uploads';
+    if(role == 2) roleFolder = 'Student_Uploads';
 
     const userFolder = username;
     const tableFolder = tableName;
+    const columnFolder = columnName;
   
     // Use process.cwd() to get the current working directory
     // const currentDirPath = process.cwd();
   
-    return path.join(baseUploadPath, roleFolder, tableFolder, userFolder);
+    return path.join(baseUploadPath, roleFolder, tableFolder, userFolder, columnFolder);
   }    
 
   createFoldersIfNotExist(folderPath) {
