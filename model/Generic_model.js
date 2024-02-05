@@ -200,7 +200,7 @@ class BaseModel {
   //check if file already exists
   async checkExistingFile(user_id, role, filename) {
     // const filename = `${file.originalname}`;
-    const existingFileQuery = `SELECT * FROM uploads WHERE user_id = ? AND role = ? AND file_name = ?`;
+    const existingFileQuery = `SELECT * FROM uploads WHERE user_id = ? AND role = ? AND original_filename = ?`;
     const result = await sql.query(existingFileQuery, [user_id, role, filename]);
 
     // console.log('res ', result)
@@ -226,16 +226,19 @@ class BaseModel {
     console.log("inside")
     
     const filename = `${file.originalname}`;
+
+    const originalFilename = filename
     // console.log(filename)
     const filePath = path.join(uploadPath, filename);
 
     // Save file to local storage
     fs.writeFileSync(filePath, file.buffer)
-    
-    // Save file information to the database
-    const insertQuery = `INSERT INTO uploads (user_id, role, file_name, file_path, created_at) VALUES (?, ?, ?, ?, NOW())`;
 
-    const result = await sql.query(insertQuery, [1,role,filename, filePath]);
+    const insertQuery = `INSERT INTO uploads (user_id, role, original_filename, file_name, file_path, created_at) VALUES (?, ?, ?, ?, ?, NOW())`;
+
+    const result = await sql.query(insertQuery, [1,role,originalFilename, filename, filePath]);
+
+    console.log('insert query is ', insertQuery)
 
     console.log('result is ', result[0])
 

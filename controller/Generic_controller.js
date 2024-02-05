@@ -188,7 +188,7 @@ class GenericController {
   uploadFile = async (req, res) => {
     try {
         const modelInstance = new this.Model();
-        const { username, role, tableName, columnName } = req.body;
+        const { username, role, tableName, columnName } = req.query;
         const file = req.file;
 
         const filename = `${file.originalname}`;
