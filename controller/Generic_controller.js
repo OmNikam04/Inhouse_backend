@@ -29,7 +29,6 @@ class GenericController {
   create = catchAsyncErrors(async (req, res) => {
     const modelInstance = new this.Model();
     const newData = req.body;
-    console.log("newData:",newData);
     const result = await modelInstance.create(newData);
     res.json({ success: true, data: result });
   });
@@ -37,7 +36,6 @@ class GenericController {
   getByUsername = catchAsyncErrors(async (req, res) => {
     const modelInstance = new this.Model();
     const { username } = req.params;
-    console.log("USERNAME IS : ", username);
     const data = await modelInstance.getByUsername(username)
     res.json({ success: true, data: data[0] });
   });
@@ -48,7 +46,6 @@ class GenericController {
     const { username } = req.query;
     const ID = req.query[this.ID]; // Use the stored ID field name
 
-    console.log("username is : ", username);
     const updatedFields = req.body;
     const result = await modelInstance.update(username, ID, updatedFields);
     res.json({ success: true, data: result });

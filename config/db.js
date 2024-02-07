@@ -7,4 +7,15 @@ const pool = mysql.createPool({
     database: process.env.MYSQL_DATABASE
 }).promise() // so that we can use async await
 
+pool.getConnection((err, connection) =>{
+    if(err){
+        console.error('Error connnecting to MySQL: ', err)
+        return
+    }
+
+    console.log('Connected successfully to MySQL')
+    console.log("Connection URL:", connection.config.connectionConfig)
+
+    connection.release()
+})
 export default pool

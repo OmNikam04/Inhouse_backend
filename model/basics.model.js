@@ -3,36 +3,30 @@ import sql from '../config/db.js';
 // Get all table names
 export async function getAllTablesModel() {
     const query = `SHOW TABLES;`;
-    console.log("Query is : ", query);
     return await sql.query(query);
   }
 
 // Get all columns from a specific table
 export async function getAllColumnsModel(tableName) {
-  console.log("table is : ",tableName)
   const query = `DESC ${tableName};`;
-  console.log("Query is : ", query);
   return await sql.query(query);
 }
 
 // Get all columns from a specific table
 export async function getAllColumns(tableName) {
   const query = `SHOW COLUMNS FROM ${tableName};`;
-  console.log("Query is : ", query);
   return await sql.query(query);
 }
 
 // Get all the data of the user according to selected table names
 export async function getDataForUserModel(username, tableName) {
   const query = `SELECT * FROM ${tableName} WHERE Username = ?`;
-  console.log("Query is : ", query);
   return await sql.query(query, [username]);
 }
 
 export async function updateSpecialAccess(Email, SpecialAccess) {
 
   const query = `UPDATE register set SpecialAccess = '${SpecialAccess}' where Email = '${Email}'`;
-  console.log("Query is : ", query);
 
   const rows = await sql.query(query);
   const selectQuery = `Select * from register where Role = 1`;
@@ -60,7 +54,6 @@ export async function updateSpecialAccessFields(username, studentTables, teacher
         SpecialAccess_Teacher = ?
     WHERE Username = ?;
   `;
-  console.log('Query is:', query);
 
   // Fetch existing values
   const fetchQuery = `SELECT SpecialAccess_Student, SpecialAccess_Teacher FROM register WHERE Username = ?`;
@@ -79,7 +72,6 @@ export async function updateSpecialAccessFields(username, studentTables, teacher
 
 export async function getSpecialAccessTables (username) {
   const query = `SELECT SpecialAccess_Student, SpecialAccess_Teacher FROM register WHERE Username = '${username}';`;
-  console.log('query is : ', query);
   return await sql.query(query)
 }
 
@@ -98,7 +90,6 @@ export async function removeSpecialAccessFields(username, studentTables, teacher
         SpecialAccess_Teacher = ?
     WHERE Username = ?;
   `;
-  console.log('Query is:', query);
 
   // Fetch existing values
   const fetchQuery = `SELECT SpecialAccess_Student, SpecialAccess_Teacher FROM register WHERE Username = ?`;
@@ -134,7 +125,6 @@ export async function getEntryCountsOfUser(username) {
     // Fetch table names for the specific role
     const tablesQuery = `SELECT ${tablesColumn} FROM alltables_stud_fact`;
     const [tablesResult] = await sql.query(tablesQuery);
-    console.log('Fetched tables:', tablesResult);
 
     const tables = tablesResult
     .filter(row => row[tablesColumn])
@@ -162,7 +152,6 @@ export async function getTableNames() {
     const tablesQuery = "SELECT * FROM alltables_stud_fact";
     const [tablesResult] = await sql.query(tablesQuery);
 
-    // console.log('all tables:', tablesResult);
     
     const allTables = tablesResult[0];
     
@@ -170,8 +159,6 @@ export async function getTableNames() {
     const studentTables = tablesResult.map(row => row.Student_Tables).filter(tableName => tableName.trim() !== '');
     const teacherTables = tablesResult.map(row => row.Teacher_Tables).filter(tableName => tableName.trim() !== '');
 
-    console.log('stud tables:', studentTables);
-    console.log('teacher tables:', teacherTables);
 
     return { studentTables, teacherTables };
   } catch (error) {
@@ -192,7 +179,6 @@ export async function getEntryCountsOfTable(tableName) {
 
 export async function getAllNotices(Role, Username) {
 
-  console.log("Get notices model hit with Role = ", Role)
   var query = "";
   if(Role == 1)
   {
@@ -202,10 +188,8 @@ export async function getAllNotices(Role, Username) {
   {
     query = `SELECT * from notices where Receiver = ${Username}`;
   }
-  console.log("Query is = ", query)
 
   const result =  await sql.query(query);
-  console.log("Result is  = ", result)
   return result[0];
 }
 

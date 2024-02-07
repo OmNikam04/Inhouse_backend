@@ -7,8 +7,6 @@ const __dirname = path.dirname(__filename);
 
 const baseUploadPath = path.join(__dirname, "..", "Uploads");
 
-// console.log('base upload path is: ',baseUploadPath)
-
 // ResearchPublications Model
 export class ResearchPublications extends BaseModel {
   constructor() {

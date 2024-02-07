@@ -30,7 +30,6 @@ class BasicController {
   getAllColumns = catchAsyncErrors(async (req, res) => {
     try {
       const {tablename} = req.query;
-      console.log("Received request with parameters:", req.query);
 
       const data = await getAllColumns(tablename);
       res.json({ success: true, data: data[0] });
@@ -42,7 +41,7 @@ class BasicController {
   getUserData = catchAsyncErrors(async (req, res) => {
     try {
       const { username, selectedTables } = req.query;
-      console.log("Received request with parameters:", req.query);
+
 
       if (!Array.isArray(selectedTables)) {
         return res.status(400).json({ success: false, message: "Invalid input" });
@@ -65,10 +64,10 @@ class BasicController {
   updateAccess = catchAsyncErrors(async (req, res) => {
     try {
       
-      // console.log("Update api hit")
+      
       const { Email, SpecialAccess } = req.query;
       const data = await updateSpecialAccess(Email, SpecialAccess);
-      // console.log("Response is : ", res)
+      
       res.status(200).send({success: true, data: data})
       
     } catch (error) {
@@ -91,15 +90,12 @@ class BasicController {
   getSpecialAccessTables = catchAsyncErrors(async (req, res) => {
     try {
         const { username } = req.query;
-
         const data = await getSpecialAccessTables(username);
-
         const combinedData = data[0].reduce((accumulator, { SpecialAccess_Student, SpecialAccess_Teacher }) => {
             accumulator.SpecialAccess_Student = (accumulator.SpecialAccess_Student || []).concat(SpecialAccess_Student.split(',').filter(Boolean));
             accumulator.SpecialAccess_Teacher = (accumulator.SpecialAccess_Teacher || []).concat(SpecialAccess_Teacher.split(',').filter(Boolean));
             return accumulator;
         }, {});
-
         res.status(200).send({ success: true, data: combinedData });
 
     } catch (error) {
@@ -226,10 +222,8 @@ getNotices = catchAsyncErrors(async (req, res) => {
   try {
 
     const { Role, Username } = req.body;
-    console.log("Get notices hit with Role = ", Role)
 
     const data = await getAllNotices(Role, Username);
-    console.log("data is : ", data)
 
     res.status(200).json({success: true, data: data});
 

@@ -241,7 +241,6 @@ export const forgotPasswordController = async (req, res) => {
 
 //reset password controller
 export const resetPasswordController = async (req, res) => {
-  console.log("resetPasswordController called");
   try {
     const { email, newPassword } = req.body;
 

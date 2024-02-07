@@ -17,7 +17,7 @@ class BaseModel {
 
   async getAll() {
     const query = `SELECT * FROM ${this.tableName}`;
-    console.log("Query is : ", query);
+    
     return await sql.query(query);
   }
 
@@ -27,7 +27,7 @@ class BaseModel {
   }
 
   async create(newData) {
-    // console.log("newdata from generic model", newData)
+    // 
     const columns = Object.keys(newData).join(", ");
     const placeholders = Object.keys(newData)
       .map(() => "?")
@@ -35,7 +35,7 @@ class BaseModel {
     const values = Object.values(newData);
 
     const query = `INSERT INTO ${this.tableName} VALUES (${placeholders})`;
-    console.log(query)
+    
     try {
       const result = await sql.query(query, values);
       return result;
@@ -60,7 +60,7 @@ class BaseModel {
       ", "
     )} WHERE Username = ? and ${this.ID} = ?`;
     setValues.push(username, ID);
-    console.log('Executing update query:', query, setValues);
+    
     try {
       const result = await sql.query(query, setValues);
       return result;
@@ -134,7 +134,7 @@ class BaseModel {
     }
     query+=';';
 
-    console.log("Query found is : ", query);
+    
 
     try {
       const result = await sql.query(query);
@@ -147,7 +147,7 @@ class BaseModel {
   // get all the columns that are selected for filtering by giving a table name
   async getFilteringColumns() {
     const query = `SELECT filtering_columns FROM metadata_teacher WHERE table_name = '${this.tableName}'`;
-    console.log("Query is : ", query);
+    
     // return await sql.query(query, [tableName]);
     const [rows] = await sql.query(query, [this.tableName]); 
     const filteringColumnsArray = rows[0].filtering_columns.split(',');
@@ -193,7 +193,7 @@ class BaseModel {
 
   async getTableNamesST() {
     const query = `SELECT Student_Tables,Teacher_Tables FROM ${this.tableName};`;
-    console.log('query is: ', query);
+    
     return await sql.query(query);
   }
 
@@ -203,7 +203,7 @@ class BaseModel {
     const existingFileQuery = `SELECT * FROM uploads WHERE user_id = ? AND role = ? AND original_filename = ?`;
     const result = await sql.query(existingFileQuery, [user_id, role, filename]);
 
-    // console.log('res ', result)
+    // 
 
     if (result[0].length > 0) {
         const file = result[0][0];
@@ -223,12 +223,10 @@ class BaseModel {
     // Check and create folders if they don't exist
     const uploadPath = this.getUploadPath(username, role, tableName, columnName);
     this.createFoldersIfNotExist(uploadPath);
-    console.log("inside")
     
     const filename = `${file.originalname}`;
 
     const originalFilename = filename
-    // console.log(filename)
     const filePath = path.join(uploadPath, filename);
 
     // Save file to local storage
@@ -238,9 +236,9 @@ class BaseModel {
 
     const result = await sql.query(insertQuery, [1,role,originalFilename, filename, filePath]);
 
-    console.log('insert query is ', insertQuery)
+    
 
-    console.log('result is ', result[0])
+    
 
     const lastInsertedId = result[0].insertId;
 
@@ -256,7 +254,6 @@ class BaseModel {
   }
 
   getUploadPath(username, role, tableName, columnName) {
-    console.log('role is: ',role)
     const baseUploadPath = this.baseUploadPath;
     // const roleFolder = role === 1 ? 'Teacher_Uploads' : 'Student_Uploads';
     let roleFolder = 'Admin_Uploads';
@@ -284,7 +281,7 @@ class BaseModel {
         try {
           // Use synchronous mkdir to create the folder
           fs.mkdirSync(folderPath, { recursive: true });
-          console.log(`Folder created: ${folderPath}`);
+          
         } catch (mkdirError) {
           console.error(`Error creating folder: ${mkdirError.message}`);
           // Handle the error as needed, e.g., throw an exception or log a message
